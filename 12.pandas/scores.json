@@ -1,0 +1,15 @@
+﻿{
+    "Vamsy":{
+        "Maths":90,
+        "Physics":85,
+        "Computers":100,
+        "Total":275,
+        "Grade":"A"
+    },
+    "Komal":{
+        "Maths":89,
+        "Physics":74,
+        "Total":163,
+        "Grade":"B"
+    }
+}
