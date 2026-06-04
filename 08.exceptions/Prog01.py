@@ -1,4 +1,3 @@
-
 x = int(input("A number? "))
 y = int(input("Another number? "))
 try:

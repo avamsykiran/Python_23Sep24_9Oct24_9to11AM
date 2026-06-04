@@ -9,3 +9,14 @@ r2 = Rectangle(5,5)
 print("r1 is {}x{}".format(r1.length,r1.breadth))
 print("r2 is {}x{}".format(r2.length,r2.breadth))
 
+"""
+class Rectangle{
+    private int length;
+    private int breadth;
+
+    Rectangle(int length,int breadth){
+        this.length = length;
+        this.breadth=breadth;
+    }
+}
+"""

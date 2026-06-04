@@ -12,7 +12,6 @@ print(a1View.base)
 
 #shaping
 print(a1.shape)
-print(a2.shape)
 
 print(np.array_split(a1,2))
 print(np.array_split(a1,3))

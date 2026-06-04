@@ -14,6 +14,7 @@ def analyze(string):
 
     return {"NoOfChars":charCount,"NoOfWords":wordCount,"NoOfdigits":digitCount,"NoOfSpecialChars":spCharCount}
 
+
 s1 = input("Enter a string ")
 
 results = analyze(s1)

@@ -10,7 +10,7 @@ def f2():
 
 def f3():
     global x  # we confirm that the x being used here is not local but global x
-    x=207     # the global x is being changed  
+    x=207     # the global x is being modified  
     print(x)  # we access the global variable
 
 f1()

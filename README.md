@@ -39,7 +39,7 @@ Python
 
     Lab Setup
 
-        Python  3.11.0
+        Python  3.13.x or above
         VSCode as an IDE 
 
     Characteristics
@@ -69,17 +69,18 @@ Python
         is the samllest indivisible part of a script or code.
 
         Identifiers
-            are the names givne to program resources liek varialbes, classes, objections, functions ..etc.,
+            are the names givne to program resources like variabels, classes, objects, functions ..etc.,
 
             1. an identifier should start with a letter or _
             2. an identifier can be of any length
             3. an identifier can not contian spaces and special character other than alphabet and digits.
             4. a class identifier is expected to start with a capital letter and all other idenfiers
                 are expected start with lower case letters.
+            
             5. if an identifier start with an _ (underscore), it is understood as a private resource
             6. if an identifier start with an __(dbl underscore), it is understood as a strongly private resource
-            7. certtain language pre-defiend identifers start and end with _ (unbderscores)
-
+            7. certtain language pre-defiend identifers start and end with __ (dbl-underscores)
+                  
         Keywords
             are reserved word in any language and python keywords are lower in case .
 
@@ -105,8 +106,14 @@ Python
                     >=  is greater than or equal to
 
             Logical Operators
-                    and
-                    or
+                    and         cond1 and cond2
+                                    when cond1 is found false, cond2 is not evaluated at all
+                                    and this is called short circuit.
+
+                    or          cond1 or cond2
+                                    when cond1 is found true, cond2 is not evaluated at all
+                                    and this is called short circuit.
+
                     not
 
             Assignment Operators
@@ -189,9 +196,9 @@ Python
 
         Text Type:	    str
         Numeric Types:	int, float, complex
-        Sequence Types:	list, tuple, range
-        Mapping Type:	dict
-        Set Types:	    set, frozenset
+        Sequence Types:	list, tuple, range          #Linear data structures
+        Mapping Type:	dict                        #dictonaries or key-value pairs
+        Set Types:	    set, frozenset              #Non Linear Dat aStructures
         Boolean Type:	bool
         Binary Types:	bytes, bytearray, memoryview
 
@@ -227,9 +234,17 @@ Python
 
         Looping Statements
 
-            while
-            for
-        
+            while           indefinite-loop     - number of iterations is indefinite
+                                                    loop executes as long as a condition is true
+
+                                                    while cond:
+                                                        looping-block-of-statements
+
+            for             definite-loop       - number of iterations is definite
+                                                    loop executes for a given number of times/iterations.
+
+                                                    
+
         Non Condition Statements
 
             break
@@ -273,6 +288,7 @@ Python
         list                YES             YES                 YES         YES       [ele1,ele2]
         tuple               NO              YES                 YES         YES       (ele1,ele2)
         set                 YES             NO                  NO          NO        {ele1,ele2}
+        frozenset           NO              NO                  NO          NO        frosenset({ele1,ele2})
         dictionary          YES             NO                  YES (>3.7)  N/A       {key:value}
                                                                 NO (<3.6)
 
@@ -280,9 +296,11 @@ Python
             to retrive the length of a string or a list or any collection.
     
         slicing 
-            collection[lb:ub] 
-            collection[:ub] 
-            collection[lb:]
+
+                                    list = ["a","b","c","d","e","f"]
+            collection[lb:ub]       list[2,4]   --->    c,d
+            collection[:ub]         list[:3]    --->    a,b,c
+            collection[lb:]         list[4:]    --->    e,f
         
         'in' and 'not in' operators are sued to check if the element exists or not in a collection
 
@@ -364,7 +382,301 @@ Python
 
         local variables
         global variables
+    
+    The Zen of Python (PEP - Python Enchanment Proposal)
 
+        Before writing a single line of code, Pythonistas embrace a set of 19 guiding 
+        principles written by Tim Peters. 
+        We can see them anytime by running `import this` in a Python terminal.
+
+        The philosophy is Readability counts. 
+            "Beautiful is better than ugly"
+            "Explicit is better than implicit."
+            "Simple is better than complex."
+        
+            If the code feels overly clever or hard to read, the Zen of Python gently nudges to refactor 
+            it for clarity.
+        
+        The Blueprint: PEP 8 Styling
+
+            PEP 8 is the official style guide for Python code. It ensures that Python code looks consistent, 
+            no matter who wrote it.
+            Key PEP 8 Rules:
+            1. Indentation: Use exactly "4 spaces" per indentation level (no tabs!).
+            2. Line Length: Limit all lines to a maximum of "79 characters".
+            3. Naming Conventions:
+                `snake_case` for functions, variables, and method names.
+                `PascalCase` (or `CapWords`) for class names.
+                `UPPER_CASE_WITH_UNDERSCORES` for constants.
+            4. Whitespace:  Put spaces around operators (e.g., `x = 5`, not `x=5`), 
+                            but not directly inside parentheses (e.g., `print(x)`, not `print( x )`).
+        
+        The Core Mechanics: Dynamic Typing & Type-Casting
+
+            Python is dynamically typed, we need NOT to declare a variable's data type ahead of time. The interpreter figures it out at runtime.
+
+            x = 42        # x is an integer
+            x = "Hello"   # dynamically re-assigned; x is now a string
+
+            However, Python is also strongly typed, meaning it won't let any crazy things like adding 
+            a string to an integer without explicit type-casting.
+
+            Common Type-Casting Functions:
+                `int()` – Converts a value to an integer.
+                `float()` – Converts a value to a floating-point number.
+                `str()` – Converts a value to a string.
+
+                age_input = "25"
+                # total_age = age_input + 5  <-- This throws a TypeError!
+
+                # Correct way using type-casting:
+                total_age = int(age_input) + 5  # Returns 30
+
+        The Engine: Arithmetic & Logical Operators
+
+            Python uses intuitive operators to manipulate data and drive logic.
+
+            In Arithmetic Operators, beyond standard math (`+`, `-`, `*`, `/`), Python includes a few specialized tools `//`,`%`,'**`
+
+            In Logical Operators, Instead of cryptic symbols like `&&` or `||`, Python uses clean, readable English words `and`, `or` and 'not` 
+        
+        The Presentation: f-Strings (Formatted String Literals)
+
+            Introduced in Python 3.6, f-strings are the gold standard for string formatting. 
+            They are faster, cleaner, and much easier to read than old methods like `%` formatting or `.format()`.
+
+            To use an f-string, simply prefix the string with an `f` or `F` and place the variables or expressions inside curly braces `{}`.
+
+            Examples of f-String Power:
+
+                name = "Alice"
+                score = 94.578
+
+                # 1. Basic interpolation
+                print(f"Hello, {name}!") 
+
+                # 2. Inline expressions/math
+                print(f"Next year, you will be {20 + 6} years old.")
+
+                # 3. Formatting floats (rounding to 2 decimal places)
+                print(f"Your final score is {score:.2f}%") 
+
+                # 4. The '=' shortcut for quick debugging (Prints: name='Alice')
+                print(f"{name=}")                 
+
+        Comprehensions
+
+            Comprehensions provide a syntactic way to create new collections (lists, sets, or dictionaries) out of existing iterables.
+
+            List Comprehensions
+                Instead of initializing an empty list, looping, and appending, a list comprehension does it all in one shot.
+
+                Syntax: [expression for item in iterable if condition]
+
+                # Old way
+                squares = []
+                for x in range(5):                    
+                    squares.append(x**2)
+
+                # Pythonic way
+                squares = [x**2 for x in range(5)]  # [0, 1, 4, 9, 16]
+
+            Set Comprehensions
+                Exactly like list comprehensions, but they use curly braces {} and automatically handle uniqueness by stripping out duplicates.
+                
+                names = ["alice", "bob", "ALICE", "charlie", "bob"]
+
+                # Creates a unique set of title-cased names
+                unique_names = {name.title() for name in names}  # {'Alice', 'Bob', 'Charlie'}
+
+            Dictionary Comprehensions
+                These also use curly braces {}, but require a key: value pair definition to construct a new dictionary.
+                
+                users = [("id_1", "Alice"), ("id_2", "Bob")]
+
+                # Convert a list of tuples into a quick lookup dictionary
+                user_dict = {uid: name for uid, name in users}  # {'id_1': 'Alice', 'id_2': 'Bob'}
+
+        Lambda Functions
+            A lambda function is a small, anonymous (unnamed) function defined using the lambda keyword. 
+            They can take any number of arguments but can only evaluate a single expression.
+
+            Syntax: lambda arguments: expression
+       
+                # Standard function
+                def add(x, y):
+                    return x + y
+
+                # Equivalent lambda function
+                add_lambda = lambda x, y: x + y
+
+                print(add_lambda(3, 5))  # Outputs: 8
+
+            Per PEP 8, you shouldn't assign lambda functions to variables like add_lambda = .... If you need a named function, use def. 
+            Lambdas are meant to be used as inline (throwaway) functions.
+
+            The map function - applies a function to every item in an iterable and returns a map object
+                                and the returned map object is usually casted to a list.
+                prices = [10, 20, 30, 40]
+
+                # Add 10% tax to every price inline
+                taxed_prices = list(map(lambda p: p * 1.10, prices))  # [11.0, 22.0, 33.0, 44.0]
+
+            The filter function - extracts elements from an iterable for which a function returns True.
+                scores = [45, 82, 91, 58, 73, 60]
+
+                # Filter out only passing scores (>= 60)
+                passing_scores = list(filter(lambda s: s >= 60, scores))  # [82, 91, 73, 60]
+
+            The sorted function - takes a custom key argument. 
+                                This tells Python exactly how to calculate the sorting order for complex data.
+
+                # A list of dictionaries representing products
+                products = [
+                    {"name": "Laptop", "price": 1200},
+                    {"name": "Mouse", "price": 25},
+                    {"name": "Monitor", "price": 300}
+                ]
+
+                # Sort the products based on the 'price' key inside the lambda
+                sorted_by_price = sorted(products, key=lambda item: item["price"])
+                sorted_by_name = sorted(products, key=lambda item: item["name"])
+
+                print(sorted_by_price)
+
+    Advanced Function Concepts & Decorators
+
+        In Python, functions aren't just blocks of code that execute tasks, but they are first-class objects.
+        This foundational concept unlocks two of Python’s most powerful design patterns: closures and decorators. 
+        
+        First-Class Functions
+
+            In Python, functions are treated like any other variable (like integers, strings, or lists). 
+            This means we can:
+                1. Assign a function to a variable.
+
+                2. Pass a function as an argument to another function.
+                    
+                    When a function is passed into another function, 
+                    the receiving function is called a "higher-order function".
+
+                3. Return a function from another function.
+                
+                def shout(text):
+                    return text.upper()
+
+                def whisper(text):
+                    return text.lower()
+                
+                #high-order-func
+                def greet(myWay):
+                    greeting = myWay("Hi, I am an AI collaborator.")
+                    print(greeting)
+                
+                greet(shout)   # Outputs: HI, I AM AN AI COLLABORATOR.
+                greet(whisper) # Outputs: hi, i am an ai collaborator.
+
+                ---------------------------------------------------------------------------
+                #high-order-func
+                def greet(myWay):
+                    greeting = myWay("Hi, I am an AI collaborator.")
+                    print(greeting)
+                
+                greet(lambda text:text.upper())   # Outputs: HI, I AM AN AI COLLABORATOR.
+                greet(lambda text:text.lower())   # Outputs: hi, i am an ai collaborator.
+        
+        Closure Mechanics
+
+            A "closure" occurs when a nested (inner) function retains access to the variables of its enclosing (outer) function, even after the outer function has finished executing.
+
+            For a closure to happen, three criteria must be met:
+                1. There must be a nested function.
+                2. The nested function must refer to a value defined in the enclosing function.
+                3. The enclosing function must "return" the nested function.
+
+                def make_multiplier(factor):
+                    # This is the outer function's local variable
+                    
+                    def multiply(number):
+                        # The inner function 'remembers' the 'factor' variable
+                        return number * factor
+                    
+                    return multiply  # Returns the inner function object
+
+                # Create two distinct closure environments
+                times_two = make_multiplier(2)
+                times_five = make_multiplier(5)
+
+                # 'make_multiplier' has already finished running here,
+                # but the inner functions still remember their respective 'factor' values!
+                print(times_two(10))   # Outputs: 20
+                print(times_five(10))  # Outputs: 50
+        
+        Decorators
+
+            A "decorator" is essentially a wrapper. 
+            It is a design pattern that allows you to modify or extend the behavior of a function 
+            without permanently altering its source code.
+
+            Architecturally, a decorator is a higher-order function that takes a function as an argument, 
+            wraps it with extra logic using a closure, and returns the wrapped function.
+
+            Manual Decorator, here is a decorator that logs when a function starts and finishes.
+
+                def my_logger(func):
+                    def wrapper():
+                        print(f"--- Starting execution of {func.__name__} ---")
+                        func()  # Execute the original function
+                        print(f"--- Finished execution of {func.__name__} ---")
+                    return wrapper
+
+                def say_hello():
+                    print("Hello, world!")
+
+                # Manual decoration
+                decorated_hello = my_logger(say_hello)
+                decorated_hello()
+
+            Using the Syntactic Sugar (`@`)
+                Python provides a much cleaner way to apply decorators using the `@` symbol directly above the function definition.
+
+                @my_logger
+                def say_goodbye():
+                    print("Goodbye, world!")
+
+                say_goodbye()
+                # Outputs:
+                # --- Starting execution of say_goodbye ---
+                # Goodbye, world!
+                # --- Finished execution of say_goodbye ---
+
+            Decorators with (Accepting `*args` and `kwargs`)
+                The decorator above fails if the function it wraps accepts arguments. 
+                To build a robust, universal decorator, your inner `wrapper` function must accept `*args` and `kwargs` and pass them right along to the original function.
+
+                import time
+
+                def timer_decorator(func):
+                    def wrapper(*args, **kwargs):
+                        start_time = time.time()
+                        
+                        # Execute the original function and capture its return value
+                        result = func(*args, **kwargs)
+                        
+                        end_time = time.time()
+                        print(f"Function '{func.__name__}' took {end_time - start_time:.4f} seconds to run.")
+                        
+                        return result  # Ensure the original function's output isn't lost
+                    return wrapper
+
+                @timer_decorator
+                def heavy_calculation(n):
+                    return sum(i * i for i in range(n))
+
+                # Call the decorated function
+                total = heavy_calculation(5_000_000)
+                print(f"Result: {total}")
+    
     Classes and Object
 
         class is a user defiend data type to represent an entity
@@ -389,6 +701,97 @@ Python
                 else if avg between 89 and 70 grade is proficient
                 else if avg between 69 and 36 grade is aspirant
 
+    Match Case Statement
+        Introduced in Python 3.10, **Structural Pattern Matching** (the `match-case` statement) brought a powerful, readable tool to the language that goes far beyond a simple `switch-case` found in languages like C++ or Java.
+
+        While it looks like a switch statement on the surface, it doesn't just check for equality; it can destructure data structures (like lists, dictionaries, or objects) and extract values on the fly.
+
+        1. Basic Matching (Like a Switch Statement)
+
+            status_code = 404
+
+            match status_code:
+                case 200:
+                    print("Success!")
+                case 400:
+                    print("Bad Request.")
+                case 404:
+                    print("Not Found.")
+                case _:
+                    print("Unknown status code.")  # The underscore acts as a wildcard/else block
+
+        2. Destructuring Sequences (Lists or Tuples)
+
+            command = ["move", "north"]
+
+            match command:
+                case ["quit"]:
+                    print("Goodbye!")
+                case ["move", direction]:
+                    print(f"Moving the character {direction}.")
+                case ["teleport", x, y]:
+                    print(f"Teleporting to coordinates: ({x}, {y})")
+                case _:
+                    print("Unknown command format.")
+
+            If `command` is `["move", "north"]`, Python matches the second case and binds the string `"north"` to the variable `direction`.
+
+        3. Matching Dictionaries (Mapping Patterns)
+        
+            user_action = {"action": "delete", "user_id": 42, "timestamp": 162509}
+
+            match user_action:
+                case {"action": "login", "user_id": uid}:
+                    print(f"User {uid} logged in.")
+                case {"action": "delete", "user_id": uid}:
+                    print(f"Deleting data for user {uid}.")
+                case _:
+                    print("Action not recognized.")
+        
+        4. Combining Patterns 
+
+            day = "Saturday"
+
+            match day:
+                case "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday":
+                    print("It's a weekday. Time to work!")
+                case "Saturday" | "Sunday":
+                    print("Weekend mode activated!")
+
+        5. Adding Guards (`if` clauses)
+
+            We can append an `if` statement to a case pattern to add conditional logic (called a **guard**).
+
+            packet = [100, 200]
+
+            match packet:
+                case [x, y] if x == y:
+                    print(f"X and Y match perfectly: {x}")
+                case [x, y] if x > y:
+                    print(f"X ({x}) is greater than Y ({y})")
+                case [x, y]:
+                    print(f"Y is greater than X")
+
+        6. Matching Object/Class Types
+
+            class Point:
+                def __init__(self, x, y):
+                    self.x = x
+                    self.y = y
+
+            location = Point(0, 10)
+
+            match location:
+                case Point(x=0, y=0):
+                    print("At the origin.")
+                case Point(x=0, y=y_val):
+                    print(f"On the Y-axis at {y_val}.")
+                case Point(x=x_val, y=0):
+                    print(f"On the X-axis at {x_val}.")
+                case Point(x, y):
+                    print(f"At coordinates ({x}, {y})")
+
+
     Modules
 
         is a logical section of an application code base.
@@ -406,7 +809,102 @@ Python
             1. a method called simpleInterest
             2. a method called compositeInterest
             3. a method called emi
-       
+
+    Python inbuilt-modules
+        1. System and File Operations
+
+            os
+                os.mkdir(), os.listdir(), os.environ.get(), os.remove()
+                Creating/deleting directories, accessing environment variables. 
+
+            pathlib
+                Path.exists(), Path.write_text(), Path.glob(), Path.cwd()
+                Modern, object-oriented way to handle file paths and I/O. 
+
+            sys
+                sys.argv, sys.exit(), sys.path, sys.platform
+                Accessing command-line arguments and interpreter-specific parameters. 
+
+            shutil
+                shutil.copy(), shutil.move(), shutil.rmtree(), shutil.make_archive()
+                High-level file operations (copying, moving, and zipping entire folders). 
+
+        2. Data Structures & Logic
+
+            collections
+                Counter(), defaultdict(), namedtuple(), deque()
+                Counting elements, setting default dict values, or using high-performance queues. 
+
+            itertools
+                chain(), cycle(), product(), permutations()
+                Creating efficient iterators for complex loops and combinations. 
+
+            functools
+                lru_cache(), partial(), reduce()
+                Optimizing code with caching or creating "pre-filled" versions of functions. 
+
+            enum
+                Enum, IntEnum, auto()
+                Creating symbolic names for constant values to improve code readability. 
+        
+        3. Math and Statistics
+            
+            math
+                math.sqrt(), math.ceil(), math.sin(), math.pi
+                Basic trigonometry, logarithms, and constants. 
+
+            random
+                random.choice(), random.randint(), random.shuffle()
+                Generating random numbers or selecting random items from a list. 
+
+            statistics
+                mean(), median(), mode(), stdev()
+                Calculating basic descriptive statistics on datasets. 
+
+            decimal
+                Decimal()
+                Handling high-precision floating-point arithmetic (critical for financial apps). 
+        
+        4. Data Formats & Serialization
+            
+            json
+                json.loads(),json.dumps(), json.load(), json.dump()
+                Converting Python dictionaries to/from JSON format.
+                
+            csv
+                csv.reader(), csv.writer(), DictReader()
+                Parsing and generating Comma-Separated Values files. 
+
+            re
+                re.search(), re.findall(), re.sub(), re.compile()
+                Using Regular Expressions for complex string searching and cleaning. 
+
+            sqlite3
+                connect(), execute(), commit()
+                Using a full SQL database engine without installing a separate server. 
+        
+        5. Datetime & Concurrency
+            
+            datetime
+                datetime.now(), strftime(), timedelta()
+                Working with dates, times, and time zone differences. 
+
+            time
+                time.sleep(), time.time()
+                Measuring execution time or pausing the program. 
+
+            threading
+                Thread(), Lock()
+                Running tasks concurrently (useful for I/O-bound tasks). 
+
+            asyncio
+                async def, await, asyncio.run()
+                Writing single-threaded concurrent code using coroutines. 
+        
+        Pro-Tip: How to see all modules
+
+            help("modules") - ON PYTHON SHELL.
+    
     Exception Handling
 
         try:
@@ -422,9 +920,20 @@ Python
         a. define a class Train having 'maxSeats' and 'seatsFilled' as fields
         b. write the script to run a managed loop that
             1. prompt for booking seats
-            2. accept the number of sets needed and book them by calling 'reserve' function on the train.
+            2. accept the number of seats needed and book them by calling 'reserve' function on the train.
             3. print seats remaning after every booking
-        c. handle appropriate exceptions
+        c. handle appropriate exceptions   
+
+    Python Type Hints
+
+        Python is a dynamically typed language, which means you never have to explicitly indicate what kind of variable it is. But in some cases, dynamic typing can lead to some bugs that are very difficult to debug, and in those cases, Type Hints or Static Typing can be convenient. Type Hints have been introduced as a new feature in Python 3.5.
+
+        Example:
+
+            def factorial(i: int) -> int:
+                if i<0: return None
+                if i==0: return 1
+                return i * factorial(i-1)
 
     NumPy
 
@@ -745,18 +1254,7 @@ Python
         Pytest help
 
             pytest -h
-    
-    Python Type Hints
-
-        Python is a dynamically typed language, which means you never have to explicitly indicate what kind of variable it is. But in some cases, dynamic typing can lead to some bugs that are very difficult to debug, and in those cases, Type Hints or Static Typing can be convenient. Type Hints have been introduced as a new feature in Python 3.5.
-
-        Example:
-
-            def factorial(i: int) -> int:
-                if i<0: return None
-                if i==0: return 1
-                return i * factorial(i-1)
-
+   
     FastApi
 
         is a modern Python web framework, very efficient in building APIs.

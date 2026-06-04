@@ -6,4 +6,4 @@ for index in range(len(userName)):
 
 for index in range(len(userName)):
     print(userName[:len(userName)-index])
-    
+  
