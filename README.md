@@ -604,7 +604,7 @@ Python
                     return multiply  # Returns the inner function object
 
                 # Create two distinct closure environments
-                times_two = make_multiplier(2)
+                times_two = make_multiplier(2)  
                 times_five = make_multiplier(5)
 
                 # 'make_multiplier' has already finished running here,
@@ -681,14 +681,265 @@ Python
 
         class is a user defiend data type to represent an entity
         in terms of its properties and behaviours.
-
-        class ClassName:
-            __init__(self,......)
-                # constructor - is the first function that gets called after initializing an object.
-                # self is the reference pointing to the current instance.
-
+        
         an object is a variable of class type
 
+        class Car:                
+            # The __init__ method is the constructor (not the initializer, technically, but functionally identical)
+            def __init__(self, make: str, model: str):
+                self.make = make        # Instance variable
+                self.model = model      # Instance variable
+                self.is_running = False # Instance variable
+
+            # Standard Instance Method, and every instance method in Python must explicitly accept self as its first parameter
+            def start_engine(self):
+                self.is_running = True
+                print(f"The {self.make} {self.model}'s engine is purring.")
+
+        Python does not have strict encapsulation enforcement. Everything is public by default. 
+        Instead, Python relies on naming conventions and a mechanism called Name Mangling.
+
+            1. Internal Use Only (Single Underscore): A prefix of a single underscore (e.g., _secret) is a convention. It tells other developers, "This is internal; touch it at your own risk." It is still completely accessible.
+
+            2. Private/Name Mangled (Double Underscore): A prefix of a double underscore (e.g., __secret) triggers name mangling. Python automatically rewrites the attribute name behind the scenes to prevent accidental overriding in subclasses.
+        
+            class BankAccount:
+                def __init__(self, owner, balance):
+                    self.owner = owner          # Public
+                    self._routing_number = 123  # Protected/Internal by convention
+                    self.__balance = balance    # Name Mangled (Private-ish)
+
+            account = BankAccount("Alice", 5000)
+            print(account.owner)            # Works: "Alice"
+            print(account._routing_number)  # Works (but PEP 8 warns against it): 123
+
+            # print(account.__balance)      # Throws AttributeError!
+
+            # How to bypass name mangling (Don't do this in production!):
+            # Syntax: _ClassName__attributeName
+            print(account._BankAccount__balance)  # Works: 5000
+
+        Getter and Setter Properties
+
+            Python uses the @property decorator to expose methods as if they were standard attributes
+
+            class Employee:
+                def __init__(self, name, salary):
+                    self.name = name
+                    self.__salary = salary
+
+                @property
+                def salary(self):
+                    """ The Getter """
+                    return self.__salary
+
+                @salary.setter
+                def salary(self, value):
+                    """ The Setter with validation """
+                    if value < 0:
+                        raise ValueError("Salary cannot be negative!")
+                    self.__salary = value
+
+            emp = Employee("Bob", 60000)
+
+            # Notice that it is not called like a function 'emp.salary()'
+            print(emp.salary)  # Acts like a field access -> Outputs: 60000
+
+            emp.salary = 65000 # Triggers the setter seamlessly
+        
+    Inheritance And Polymorphism
+
+        No Overloading, but averiding is possible
+
+        # (Base)
+        class Employee:
+            def __init__(self, name,sal):
+                self.name = name
+                self.sal = sal
+            
+            def total_sal(self):
+                return self.sal
+
+        # Single Inheritance
+        class Manager(Employee):
+            def __init__(self, name,sal,ta):
+                super().__init__(name,sal)
+                self.sal = sal 
+            
+            def total_sal(self):
+                return super.total_sal() + self.ta
+
+        # Multi-Level Inheritance
+        class GeneralManager(Manager):
+            def __init__(self, name,sal,ta,allowence):
+                super().__init__(name,sal,ta)
+                self.allowence = allowence 
+            
+            def total_sal(self):
+                return super.total_sal() + self.allowence
+        
+    Abstraction        
+
+        Python practices Duck Typing (for abstraction): 
+            "If it walks like a duck and quacks like a duck, it's a duck." A shared base class is not needed to achieve abstraction; you just need objects to implement methods with the same name.
+
+        class Dog:
+            def make_sound(self):
+                return "Bark!"
+
+        class Cat:
+            def make_sound(self):
+                return "Meow!"
+
+        # This function doesn't care about the class type; it only cares that 'animal' has a 'make_sound' method.
+        def animal_chorus(animal):
+            print(animal.make_sound())
+
+        animal_chorus(Dog()) # Outputs: Bark!
+        animal_chorus(Cat()) # Outputs: Meow!
+
+    Abstraction forced by 'abc'
+
+        abc - abstract base class
+        we have a package called abc in Python
+        @abstratmethod  to be applied on a method with no-impl.
+        In python, 'pass' is a keyword used to skip implementation body of any block, the
+        same is used to skip the block of a abstract emthod.
+
+        from abc import ABC, abstractmethod
+
+        class Shape(ABC):
+            @abstractmethod
+            def area(self):
+                pass
+
+        class Rect(Shape):
+            #assuming a proper constructor here
+
+            def area(self):
+                self.length*self.breadth
+
+        NOTE: by combining @property and @abstractmethod decorators, we can create abstract properties too.
+
+        class DBConnectionProvider(ABC):
+            @property
+            @abstracmethod
+            def connection_string(self):
+                pass
+
+        class MySQLConnectionProvider(DBConnectionProvider):
+            @property            
+            def connection_string(self):
+                return "mysql-related-connection-string"
+
+        class SqlServerConnectionProvider(DBConnectionProvider):
+            @property            
+            def connection_string(self):
+                return "SqlServer-related-connection-string"
+    
+    Dunder (Magic) Methods
+        __init__(self,..)   represents constructor        
+        __str__(self) Allows us to pass an object directly into Python's native str() function.
+        __len__(self) Allows us to pass an object directly into Python's native len() function.
+
+        class Book:
+            def __init__(self, title, author, pages):
+                self.title = title
+                self.author = author
+                self.pages = pages
+
+            def __str__(self):
+                # End-user view
+                return f"'{self.title}' by {self.author}"
+
+            def __len__(self):
+                # Ties object into len()
+                return self.pages
+
+        book = Book("Python Basics", "Jane Doe", 320)
+
+        print(str(book))  # Outputs: 'Python Basics' by Jane Doe
+        print(len(book))  # Outputs: 320
+    
+    The Daimond Problem (multiple inheretence)
+
+        In multiple inheritance, the Diamond Problem occurs when a subclass inherits from two parent classes that both inherit from a single grandparent class. If the grandparent class has a method that both parent classes override, which version of the method should the grandchild inherit?
+
+                /--- Class B ---\
+            Class A              +---> Class D
+                \--- Class C ---/
+
+        The MRO - (Method Resolution Order)
+
+            Python uses the C3 Linearization algorithm to build a flat, ordered list of classes to search through when looking for a method or attribute.
+
+            The MRO enforces three strict rules:
+
+                1. Subclasses before Parents:   A child class is always checked before its parent classes.
+                2. Left-to-Right Ordering:      Parent classes are checked in the exact order they are 
+                                                listed in the class definition (e.g., class D(B, C) checks B before C).
+
+                    class A:
+                        def process(self):
+                            print("Executing Class A")
+
+                    class B(A):
+                        def process(self):
+                            print("Executing Class B")
+                            super().process()  # Passes control to the next class in the MRO
+
+                    class C(A):
+                        def process(self):
+                            print("Executing Class C")
+                            super().process()  # Passes control to the next class in the MRO
+
+                    class D(B, C):
+                        def process(self):
+                            print("Executing Class D")
+                            super().process()
+
+                    d = D()
+                    d.process()
+
+                    print(D.mro())
+
+                    output:
+                        Executing Class D
+                        Executing Class B
+                        Executing Class C
+                        Executing Class A
+
+                        [<class '__main__.D'>, <class '__main__.B'>, <class '__main__.C'>, <class '__main__.A'>, <class 'object'>]   
+                                                
+                3. Monotonicity:                The relative order of parent classes must be preserved across 
+                                                the entire inheritance hierarchy, and if not Python will refuse to compile the code and throw a TypeError.
+
+                    class X:
+                        def someMethod(self):
+                            print("Class x")
+
+                    class Y: 
+                        def someMethod(self):
+                            print("Class y")
+
+                    # X comes before Y
+                    class Alpha(X, Y): 
+                        def someMethod(self):
+                            print("Class Alpha")
+
+                    # Y comes before X (Contradiction!)
+                    class Beta(Y, X): 
+                        def someMethod(self):
+                            print("Class Beta")
+
+                    # This will crash! Python cannot build a consistent MRO list
+                    class Gamma(Alpha, Beta): 
+                        def someMethod(self):
+                            print("Class Gamma")
+
+                    Error Output:
+                        TypeError: Cannot create a consistent method resolution order (MRO) for bases X, Y
+            
     assignment7: 
         a. define a class Student with properties 
             name,maths score,phy score and computers score
@@ -702,7 +953,7 @@ Python
                 else if avg between 69 and 36 grade is aspirant
 
     Match Case Statement
-        Introduced in Python 3.10, **Structural Pattern Matching** (the `match-case` statement) brought a powerful, readable tool to the language that goes far beyond a simple `switch-case` found in languages like C++ or Java.
+        Introduced in Python 3.10, Structural Pattern Matching (the `match-case` statement) brought a powerful, readable tool to the language that goes far beyond a simple `switch-case` found in languages like C++ or Java.
 
         While it looks like a switch statement on the surface, it doesn't just check for equality; it can destructure data structures (like lists, dictionaries, or objects) and extract values on the fly.
 
@@ -790,7 +1041,6 @@ Python
                     print(f"On the X-axis at {x_val}.")
                 case Point(x, y):
                     print(f"At coordinates ({x}, {y})")
-
 
     Modules
 
@@ -916,6 +1166,12 @@ Python
         finally:
             #this block executes irrespective of an exception being raised or not raised.    
 
+        in case of no exceptions occuring in the try-block
+                else block - finally block are executed
+
+        in case of an exception occuring in the try-block
+                except block - finally block are executed
+
     assignment9: 
         a. define a class Train having 'maxSeats' and 'seatsFilled' as fields
         b. write the script to run a managed loop that
@@ -930,10 +1186,10 @@ Python
 
         Example:
 
-            def factorial(i: int) -> int:
-                if i<0: return None
-                if i==0: return 1
-                return i * factorial(i-1)
+            def factorial(x: int) -> int:
+                if x<0: return None
+                if x==0: return 1
+                return x * factorial(x-1)
 
     NumPy
 
@@ -999,7 +1255,7 @@ Python
 
         NumPy ufuncs - 'Universal Functions'
 
-            numpy.frompyfunc(scalarFunc,noOfInputArrays,noOfOutputArrays)
+            numpy.frompyfunc(scalarFunc,noOfInputArgs,noOfOutputs)      VECTORIZATION
 
             numpy.add(arr1,arr2)
             numpy.subtract(arr1,arr2)
@@ -1009,18 +1265,15 @@ Python
             numpy.mod(arr1,arr2)
             numpy.divmod(arr1,arr2)
             numpy.absolute(arr1)
-            numpy.trunc(arr1)
-            numpy.around(arr1)
-            numpy.floor(arr1)
-            numpy.ceil(arr1)
+            numpy.trunc(arr1)           12.45 -> 12      12.69->12  (deletes the fractional part)
+            numpy.around(arr1)          12.45 -> 12      12.69->13  (rounds the fractional part)
+            numpy.floor(arr1)           12.45 -> 12      12.69->12  
+            numpy.ceil(arr1)            12.45 -> 13      12.69->13  
             numpy.log2(arr1)
             numpy.log10(arr1)
-            numpy.cumsum(arr1)
-            numpy.sum([arr1,arr2])
+            numpy.cumsum(arr1)          cumulative sum            
             numpy.cumprod(arr)
-            numpy.prod(arr)
-            numpy.prod([arr1,arr2])
-            numpy.diff(arr,n=noOfTimes)
+            numpy.prod(arr)                        
             numpy.lcm(n1,n2,n3...)
             numpy.gcd(n1,n2,n3...)
             
@@ -1096,7 +1349,14 @@ Python
 
     Pandas
 
-        is a python library used for data anlysis.
+        is a python library used for 
+            1. data analysis            extracting patterns from a collected dataset to support decisions.
+            2. data manipulation        project the data in a new time series, 
+                                        compoute dependent attributes ..etc.,
+            3. data cleaning            process the data to ensure consistency and validity.
+            4. data transformation      is to convert the data from one format to another
+                                        like xml to json or csv to json ..et.,c
+                                        or plain text to attribute-for, or semi-formatted form.
 
         installing:
 
@@ -1135,37 +1395,153 @@ Python
             pandas.read_json(aJsonFilePath)
                 returns a dataFrame loaded with content of the JSON file
 
+            pandas.read_excel(aExcelFilePath)
+                returns a dataFrame loaded with content of the XL file (needs 'openpyxl')
+            
+            dataFrame.to_json(aJsonFilePath)
+                writes a dataFrame into a JSON file
+            
+            dataFrame.to_csv(aCSVFilePath)
+                writes a dataFrame into a CSV file
+
+            dataFrame.to_excel(aExcelFilePath)
+                writes a dataFrame into a Excel file (needs 'openpyxl')
+
+        Pandas Data Analysis        
+
+            dataFrame.head(n)       returns the first 'n' records n is 5 by default
+            dataFrame.tail(n)       returns the bottom 'n' records n is 5 by default
+            dataFrame.discribe()    returns the complete statistics (mod, median, sum ..etc) 
+            dataFrame.shape         returns the dataframe shape (rowCount,colCount)
+            dataFrame.columns       returns the list of columns.
+            dataFrame.info()        returns all about the dataset including mem-usage
+            dataFrameObj.corr()		computes correlation between cols
+
             dataFrame.toString()
                 prints the entire dataframe, as a dataFrame if directly printed
                 prints the top 5 and last 5 rows only when the data is huge.
-
-        Pandas Data Analysis
-
-            dataFrameObj.head(rowCount)  returns the specified number of top rows
-            dataFrameObj.tail(rowCount)  returns the specified number of last rows
-            dataFrameObj.info()
-    	    dataFrameObj.corr()		     computes correlation between cols
-	
+   	    
         Pandas Data Cleaning
 
-            dataFrameObj.dropna()  				           removes rows with null values and returns a new dataframe
+            dataFrameObj.dropna()  				           removes rows with null values 
+                                                            and returns a new dataframe
+                                                            
             dataFrameObj.dropna(inplace=True)  			   removes rows with null values 
-                                                        modifeing the actual dataframe
-            dataFrameObj.fillna(defaultVaue,inplace=True)  replaces null values with a 
+                                                            modifying the actual dataframe
+
+            dataFrameObj.fillna(defaultValue,inplace=True) replaces null values with a 
                                                             default value in the dataframe
+
             dataFrameObj["label"].fillna(defaultVaue,inplace=True)
             dataFrameObj["lable"].mean()
             dataFrameObj["lable"].median()
             dataFrameObj["lable"].mode()
 
-        Pandas Plotting Charts
+        Pandas Data Visualization (Plotting Charts)
 
-            dataFrameObj.plot()  					                    Plots a curve for each series in the df
-            dataFrameObj.plot(kind="scatter",x="xLabel",y="yLabel")  	Plots a scatter chart against choosen 
-                                                                        xseries and yseies in the dataframe
-            dataFrameObj["label"].plot(kind="hist")		  	            Plots a histogram chart of a 
-                                                                        choosen series 
-         
+            dataFrameObj.plot()  					                    
+                Plots a curve for each series in the df
+
+            dataFrameObj.plot(kind="scatter",x="xLabel",y="yLabel")  	
+                Plots a scatter chart against choosen xseries and yseies in the dataframe
+
+            dataFrameObj["label"].plot(kind="hist")                
+                Plots a histogram chart of a choosen series 
+
+        Data Wrangling And Transformations
+
+            Filtering Rows:  is done using Boolean Indexing, instead of writing structural conditional blocks
+                            dataFrame[booleanExpression]
+
+            Sorting Data :  Sorting datasets relies on .sort_values(). 
+                            It accepts single columns, lists of columns, and independent ascending/descending parameters for complex ordering operations.
+
+                            dataFrame.sort_values(by="colLabel", ascending=False)
+        
+            Single Column Transformations
+                dataFrame["new_col"] = dataFrame["col"].apply(lambdaExpression)
+                dataFrame["estimatedHike"] = dataFrame["sal"].apply(lambda sx:sx*0.10)
+
+            Multi Column Transformations
+                dataFrame["new_col"] = dataFrame["col"].apply(evaluationMethod,axis=1)
+
+            Mathematical Vectorization
+                dataFrame["estimatedHike"] = dataFrame["sal"]*0.10
+
+            String Vectorization
+                dataFrame["full_name_in_upper"] = dataFrame["full_name"].str.upper()
+
+            Logical Vectorization
+                dataFrame["new_col"] = np.where(cond,true_val,false_val)
+                dataFrame["new_col"] = np.select([cond1,cond2], [result1,result2], default="else value")
+        
+        Data Aggregations
+
+            Summarizing Data with .groupby()
+                The .groupby() method implements the classic database design pattern: Split-Apply-Combine.
+                Split the DataFrame into chunks based on a specific column's unique values.
+                Apply a mathematical function (like sum, mean, or count) to each chunk.
+                Combine those results back into a single, summarized DataFrame.
+
+                dataFrame.groupby("groupCol")["aggregateCol"].<aggregate>().reset_index()
+
+                <aggregate> is sum, min, max, avg, mean, or count
+
+                We append .reset_index() at the end because grouping shifts the target column into the DataFrame's index. Resetting it converts it back into a standard, clean column.
+
+            Advanced Grouping: The .agg() Method
+
+                df_sales.groupby(["groupCol1", "groupCol2"]).agg({
+                    "aggCol1": [<aggregate1>,<aggregate2>],
+                    "aggCol2": "<aggregate>"
+                })
+
+            Pivot Tables
+            
+                SalesMan        Quater      Sales
+                A               Q1          12
+                A               Q2          10
+                A               Q3          5
+                B               Q1          7                
+                B               Q3          6
+
+                            A   B      TotalSales
+                Q1          12  7       19
+                Q2          10  0       10
+                Q3          5   6       11
+                TotalSales  27  13      40
+
+                df_sales.pivot_table(
+                    values="Sales",     # The numeric data to aggregate
+                    index="Quater",     # Rows
+                    columns="SalesMan", # Columns
+                    aggfunc="sum",      # The aggregation function (defaults to 'mean' if omitted)
+                    fill_value=0        # Replace any resulting missing NaN cells with 0
+                )
+
+        Merging and Joining Datasets
+
+            Inner Join (The Default)
+                pd.merge(df1, df2, on="join_col", how="inner")
+
+            Left Outer Join (The Default)
+                pd.merge(df1, df2, on="join_col", how="left")
+
+            Right Outer Join (The Default)
+                pd.merge(df1, df2, on="join_col", how="right")
+
+            Joins when the left and right cols-lables are not matching.
+                pd.merge(df1, df2, left_on="lft_col",right_on="rt_col", how="inner")
+            
+        Unions
+
+            pd.concat([df1,df2,df3])               vertical stacking
+            pd.concat([df1,df2,df3],axis=1)        horizontal stacking
+
+                join                inner or outer
+                ignore_index        false           retain actual indexes
+                                    or true         regerate indexes afresh      
+
     Requests
 
         is a HTTP request and Response management library.
@@ -1223,7 +1599,7 @@ Python
             streamlit.button("")                                   returns true when clicked
             streamlit.text_input("question", "default ans..")      returns the entered text
             streamlit.slider("label", min, max)                    returns the marked value
-    
+            
     PyTest 
 
         is a testing framework for python
@@ -1254,7 +1630,202 @@ Python
         Pytest help
 
             pytest -h
-   
+
+    SQLAlchemy ORM Data Modeling
+
+        Installation
+
+            pip install sqlalchemy
+
+        Connecting to the Database
+
+            from sqlalchemy import create_engine
+
+            # Create an Engine. For this example, Let's use an in-memory SQLite database.            
+            engine = create_engine("sqlite:///:memory:", echo=True) 
+
+            # Setting echo=True makes SQLAlchemy print every raw SQL statement it executes to the terminal.
+            # Creates a physical file named 'app_data.db' in your local project root folder
+            engine = create_engine("sqlite:///app_data.db", echo=True)
+
+        Connecting to Postgres
+
+            pip install psycopg
+
+            postgres_url = "postgresql+psycopg://username:password@localhost:5432/my_database"
+            engine = create_engine(postgres_url, echo=True) 
+
+        Connecting to MySQL
+            Option1:
+
+                pip install pymysql
+
+                mysql_url_pymysql = "mysql+pymysql://username:password@localhost:3306/my_database"
+                engine = create_engine(mysql_url_pymysql, echo=True) 
+            
+            Option2
+                pip install mysqlclient
+                
+                mysql_url_client = "mysql+mysqldb://username:password@localhost:3306/my_database"
+                engine = create_engine(mysql_url_client, echo=True) 
+
+        Modeling Tables with Declarative Base
+
+            from typing import Optional
+            from sqlalchemy import String, Integer, ForeignKey
+            from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+
+            # Step 1: Create the Registry Base Class
+            class Base(DeclarativeBase):
+                pass
+
+            # Step 2: Model a Department Table
+            class Department(Base):
+                __tablename__ = "depts"  # Maps directly to the SQL table name
+
+                # Mapped[] defines the Type-Hinting layer for IDEs and type-checkers (like mypy)
+                # mapped_column() configures the actual SQL constraint properties
+                id: Mapped[int] = mapped_column(primary_key=True)
+                name: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
+
+                # Relationship attribute (Allows OOPS-style navigation: department.employees)
+                # This does NOT create a column in the DB; it tells SQLAlchemy how to join tables in Python memory.
+                employees: Mapped[list["Employee"]] = relationship(back_populates="department")
+
+            # Step 3: Model an Employee Table (with a Foreign Key)
+            class Employee(Base):
+                __tablename__ = "emps"
+
+                id: Mapped[int] = mapped_column(primary_key=True)
+                name: Mapped[str] = mapped_column(String(100), nullable=False)
+                
+                # Optional[] implies nullable=True in the database
+                email: Mapped[Optional[str]] = mapped_column(String(255)) 
+                
+                # Defining a physical Foreign Key Column
+                department_id: Mapped[int] = mapped_column(ForeignKey("departments.id"))
+                
+                # Bidirectional relationship link
+                department: Mapped["Department"] = relationship(back_populates="employees")
+        
+        Emitting the Schema
+            
+            # Iterates through every class inheriting from 'Base' and generates tables in SQLite
+            Base.metadata.create_all(engine)
+
+        Reset / Drop the Schema
+                        
+            Base.metadata.drop_all(engine)
+
+        Migration
+
+            1. When create_all is called, the tables that do not exist in teh database are only created.
+            2. If a table exists, and its shcema is not matching with the class definition, no changes
+                are made to the table. (and this leads to inconsistency or run-time errors)
+            3. In dev mode
+                    drop all
+                    then
+                    create all
+               In prod mode 
+                    we use tools like 'alembic'
+
+        Executing Operations with the Session
+
+            from sqlalchemy.orm import sessionmaker
+
+            # Create a session factory bound to our database engine
+            Session = sessionmaker(bind=engine)
+
+            # Use a context manager ('with' block) to ensure the session closes safely automatically
+            with Session() as session:
+                # 1. Create instances of our Python Objects
+                eng_dept = Department(name="Engineering")
+                
+                alice = Employee(name="Alice", email="alice@company.com", department=eng_dept)
+                bob = Employee(name="Bob", department=eng_dept) # Email defaults to None/NULL
+                
+                # 2. Stage them in the transaction pipeline
+                session.add(eng_dept) # Cascades automatically and adds Alice and Bob too!
+
+                # 3. Commit the transaction to the database
+                session.commit()
+        
+        Querying Data Objects
+
+            from sqlalchemy import select,insert,delete,update
+
+            with Session() as session:
+                # Build a type-safe Select statement
+                statement = select(Employee).where(Employee.name == "Alice")
+                                
+                # Execute and fetch the first scalar result
+                employee = session.scalars(statement).first() 
+                #.all() instead of .first() to retrive a list of recs.
+                
+                print(f"Fetched Employee: {employee.name}")
+                # Seamlessly cross into the joined table using our relationship property:
+                print(f"Works in department: {employee.department.name}")
+
+                delStatement = delete(Employee).where(Employee.id == 101)
+                session.execute(delStatement)
+                session.commit()
+
+                updateStmt = (
+                        update(Employee)
+                        .where(Employee.id == 365)
+                        .values(sal=78000)
+                )
+                session.execute(updateStmt)
+                session.commit()
+
+                insStmt = insert(Employee)
+                session.execute(insStmt, empObjectsList)
+                session.commit()
+      
+        CRUD Operations
+
+            # Stage multiple records in the Session transaction cache
+            session.add_all([rec1, rec2])
+
+            # Retrive by id
+            rec = session.get(EntityClassName, ID)
+            
+            # Deletion
+            session.delete(rec)
+
+            Updation
+                # 1. Fetch the target entity
+                rec = session.get(EntityClassName, ID)
+                
+                if rec:
+                    # 2. Modify properties directly
+                    rec.field1 = newValueForField1
+                    rec.field2 = newValueForField2
+                    
+                    # 3. Commit tracking changes
+                    session.commit()
+
+    WebServices
+
+        A web-service is a method offering bussiness logic and hsoted on a server.
+        That method is invoked by sending a request from a ui-client.
+        API is a collection of web-services
+
+        web-serives that run on SOAP protocol are called SOAP webservices
+        web-serives that run on HTTP protocol are called RESTful webservices (rest-api)
+
+        Multi-tiered-app
+
+            DatabaseServer      WebServer           Client
+                Database            webApp              Apps (FrontEnd)
+                                    webService (BE)
+                                        
+                                        <---------->    flipkart-react-app
+                                        <---------->    flipkart-andriod-app
+                        flipkart-api    <---------->    flipkart-website
+                                        <---------->    flipkart-ios-app
+                                        <---------->    flipkart-angular-app
+
     FastApi
 
         is a modern Python web framework, very efficient in building APIs.
@@ -1280,6 +1851,9 @@ Python
 
         Luanching 'app' object on uvicorn server assuming the program is in app.py
             uvicorn main:app --reload   
+
+   
+   
 
     Langchain, LlamaIndex    
 

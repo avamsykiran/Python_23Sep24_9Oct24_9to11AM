@@ -1,9 +1,7 @@
 
-class NegativeValueAmountException(Exception):
-    pass
+class NegativeValueAmountException(Exception): pass
 
-class InsufficientBalanceException(Exception):
-    pass
+class InsufficientBalanceException(Exception): pass
 
 class BankAccount:
     def __init__(self,openingBalance):
