@@ -1826,6 +1826,38 @@ Python
                                         <---------->    flipkart-ios-app
                                         <---------->    flipkart-angular-app
 
+    SOAP WebService vs Rest-Api
+
+        SOAP webservices use 'xml' as media of exchange
+        'xml' has it own limition and can not handle all sorts of data like images/pdfs/other docs ..et.,
+
+        SOPA also had no well defoined machanisim to handle errors or resposne cycles between
+        the web server and the web client.
+
+        REST-api is designed to run on HTTP protocol, and
+        HTTP protocol is a very well designed protocol that offers
+            http-methods        that are mapped to differetn crud operations
+                    GET         retrival of oen or more records
+                    POST        insertion
+                    PUT         updation
+                    DELETE      deletion
+
+            http-status-code    that are mapped to different situations in thre req/resp cycle
+                    1xx         indicate that the request is received and is under processing..!
+                    2xx         indicate that the operation requests is completed successfully 
+                        200     OK              is issued when retrival is successful
+                        201     CREATED         is issued when insertion is successful 
+                        202     ACCEPTED        is issued when updation is successful
+                        203     NO CONTENT      is issued when deletion is successful
+                    3xx         indicate that the rq is being redirected for some reason
+                    4xx         indicate that the operation requests failed due to a client side error
+                        400     BAD REQUEST     for validation errors or duplicate ids...etc.,
+                        404     NOT FOUND       record for a givne id is not found
+                    5xx         indicate that the operation requests failed due to a server side error
+                        500     INTERNAL SERVER ERROR
+
+            and is by default designed to work with almost all sorts of media (json,xml,images...etc.,)
+
     FastApi
 
         is a modern Python web framework, very efficient in building APIs.
@@ -1837,6 +1869,8 @@ Python
             pip install uvicorn
             pip install fastapi
             pip install pydantic
+            pip install sqlalchemy
+            pip install sqlmodel
             
         Mapping Methods
 
@@ -1848,12 +1882,30 @@ Python
             @app.delete("url")          DELETE Mapping  for deletion operations
 
             URL segment marked in {} is a path parameter
+            
+            assuming our rest-api http server is running on 8000 port
+            
+            /depts                  http://localhost:8000/depts     
+            /depts/{did}            http://localhost:8000/depts/10
+                                    http://localhost:8000/depts/20     
+            /employees              http://localhost:8000/employees
+            /employees/{eid}        http://localhost:8000/employees/101
+                                    http://localhost:8000/employees/102
+            
+            /depts/{did}/emps       http://localhost:8000/depts/10/emps
 
         Luanching 'app' object on uvicorn server assuming the program is in app.py
             uvicorn main:app --reload   
 
-   
-   
+    Assignemnt:
+
+        1. define a model "Contact" with fields contact_id,full_name,mobile,mail_id
+        2. using SqlAlchemy and fast-api create rest-api end-points for 
+                retriving all contacts
+                retrive contact given id
+                insert contact
+                update contact
+                delete contact givne a id
 
     Langchain, LlamaIndex    
 
@@ -1885,7 +1937,9 @@ Python
             Langchain	
                 Chatbot construction: Create a chatbot capable of answering specific subject queries using LLMs for accurate and relevant responses.
                 Text summarization: Use LangChain to generate brief summaries of long documents or articles, helping users to quickly grasp the key points.
+
             LlamaIndex
                 Question-answering system: Build a system that provides answers by connecting to external knowledge bases, using LlamaIndex to compile an index of queries and responses.
 
                 Topic extraction: Use LlamaIndex to extract topics from unstructured data, linking it to LLMs for deeper analysis and understanding.
+

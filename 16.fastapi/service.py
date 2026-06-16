@@ -1,38 +1,61 @@
 from models import Item
+from database import SessionLocal
 from typing import List
 
-_items:List[Item] = []
-
 def getAll() -> List[Item]:
-    return _items
+    """Get all items from database"""
+    db = SessionLocal()
+    try:
+        items = db.query(Item).all()
+        return items
+    finally:
+        db.close()
 
-def getById(id:int) -> Item | None:
-    item:Item | None = None
-    
-    for i in range(0,_items.count):
-        if _items[i].id==id:
-            item=_items[i]
-            break 
-        
-    return item
+def getById(id: int) -> Item | None:
+    """Get item by ID"""
+    db = SessionLocal()
+    try:
+        item = db.query(Item).filter(Item.id == id).first()
+        return item
+    finally:
+        db.close()
 
-def add(item:Item):
-    _items.append(item)
-    
-def update(item:Item):
-    for i in range(0,_items.count):
-        if _items[i].id==item.id:
-            _items[i]=item
-            break 
+def add(item: Item):
+    """Add new item to database"""
+    db = SessionLocal()
+    try:
+        db.add(item)
+        db.commit()
+        db.refresh(item)
+        return item
+    finally:
+        db.close()
 
-def deleteById(id:int):
-    _item:Item | None = None
-    
-    for i in range(0,_items.count):
-        if _items[i].id==id:
-            item=_items[i]
-            break 
-    
-    if item!=None:
-        _items.remove(item)
+def update(item: Item):
+    """Update existing item"""
+    db = SessionLocal()
+    try:
+        existing_item = db.query(Item).filter(Item.id == item.id).first()
+        if existing_item:
+            existing_item.item_name = item.item_name
+            existing_item.price = item.price
+            db.commit()
+            db.refresh(existing_item)
+            return existing_item
+        return None
+    finally:
+        db.close()
+
+def deleteById(id: int):
+    """Delete item by ID"""
+    db = SessionLocal()
+    try:
+        item = db.query(Item).filter(Item.id == id).first()
+        if item:
+            db.delete(item)
+            db.commit()
+            return True
+        return False
+    finally:
+        db.close()
 
