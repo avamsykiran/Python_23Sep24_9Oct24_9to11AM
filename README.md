@@ -66,16 +66,36 @@ Python
 
     Tokens
 
-        is the samllest indivisible part of a script or code.
+        is the smallest indivisible part of a script or code.(just like a word in a doc)
+
+        Simmillar to the words in ENGLISH are categorized into "parts-of-speach", the tokens are
+        aslo categorized as following:
+            1. Identifiers
+            2. Keywords
+            3. Operators
+            4. Comments
+            5. Literals
 
         Identifiers
             are the names givne to program resources like variabels, classes, objects, functions ..etc.,
 
             1. an identifier should start with a letter or _
             2. an identifier can be of any length
-            3. an identifier can not contian spaces and special character other than alphabet and digits.
+            3. an identifier can not contian spaces and special character other than underscore (_).
             4. a class identifier is expected to start with a capital letter and all other idenfiers
-                are expected start with lower case letters.
+                are expected to start with lower case letters.
+
+                box_length = 90
+                box_width = 89
+
+                def get_box_area:
+                    return box_length*box_width
+
+                class Box:
+                    pass
+
+                class LargeBox:
+                    pass
             
             5. if an identifier start with an _ (underscore), it is understood as a private resource
             6. if an identifier start with an __(dbl underscore), it is understood as a strongly private resource
@@ -85,11 +105,16 @@ Python
             are reserved word in any language and python keywords are lower in case .
 
         Operators
+
+            expression  is a mathemetical statement that has            a = b + c
+                operands                                                a, b and c
+                operators                                               = and +
+
             Arithemtic
                     +   addition        sum
                     -   substraction    difference
                     *   multiplication  product
-                    /   division        quitiont
+                    /   division        quitiont 
                     %   division        reminder
                     **  exponent
                     //  floor division  quitiont
@@ -105,16 +130,24 @@ Python
                     <=  is less than or equal to
                     >=  is greater than or equal to
 
+                    print(a == b)       prints True or False (boolean values)
+
             Logical Operators
                     and         cond1 and cond2
                                     when cond1 is found false, cond2 is not evaluated at all
                                     and this is called short circuit.
-
+                               
                     or          cond1 or cond2
                                     when cond1 is found true, cond2 is not evaluated at all
                                     and this is called short circuit.
 
+                         if (age>=18 and gender=="GIRL") or  (age>=21 and gender=="BOY"):
+                            print("You can marry")
+
                     not
+                        if not ( (age>=18 and gender=="GIRL") or  (age>=21 and gender=="BOY") ):
+                            print("You can not marry")
+
 
             Assignment Operators
                     =
@@ -1896,6 +1929,7 @@ Python
 
         Luanching 'app' object on uvicorn server assuming the program is in app.py
             uvicorn main:app --reload   
+            uvicorn main:app --port 8888 --reload   
 
     Assignemnt:
 
@@ -1907,7 +1941,7 @@ Python
                 update contact
                 delete contact givne a id
 
-    Langchain, LlamaIndex    
+    AI Frameworks Langchain, LlamaIndex    
 
         Large Language Models (LLMs) are transforming how users approach tasks related to searching, interacting with, and generating new content. 
 
@@ -1919,23 +1953,25 @@ Python
             Data analysis software
 
         Comparing LlamaIndex and Langchain
- 
-                         	
+                          	
         Primary Function 	
             Langchain	
-                LangChain is a Python-based library that enables the development of custom NLP applications using large language models. 	            
+                LangChain is a Python-based library that enables the development of custom NLP applications using large language models. 	      
+
             LlamaIndex
                 Formerly GPT-Index, LlamaIndex is a project consisting of data structures designed to ease the integration of extensive external knowledge bases with large language models.
 
         Key Features 	
             Langchain	
                 Supports GPT-2, GPT-3, and T5 LLMs – Provides tokenization, text generation, and question-answering capabilities – Ideal for creating chatbots and summarizing lengthy documents. 	
+ 
             LlamaIndex
                 Enables integration with external knowledge bases, including Wikipedia and Stack Overflow – Allows topic extraction from unstructured data- Supports GPT-2, GPT-3, GPT-4and T5 LLMs.
         
         Use Cases
             Langchain	
                 Chatbot construction: Create a chatbot capable of answering specific subject queries using LLMs for accurate and relevant responses.
+
                 Text summarization: Use LangChain to generate brief summaries of long documents or articles, helping users to quickly grasp the key points.
 
             LlamaIndex
@@ -1943,3 +1979,312 @@ Python
 
                 Topic extraction: Use LlamaIndex to extract topics from unstructured data, linking it to LLMs for deeper analysis and understanding.
 
+    LangChain API / Structural Framework
+    ------------------------------------------------------------------------------------------------------
+        is used to build LLM-orchestrated applications.
+
+        Instalaltion
+            
+            pip install langchain-core langchain-openai
+
+        1. The Package Architecture Hierarchy
+
+            LangChain split its monolithic architecture into distinct, decoupled packages to ensure production-grade stability and lightweight deployments.
+
+                ┌────────────────────────────────────────────────────────┐
+                │                   langchain (Chains)                   │
+                │  Higher-level, pre-built application blueprints        │
+                └───────────────────────────┬────────────────────────────┘
+                                            ▼
+                ┌────────────────────────────────────────────────────────┐
+                │                langchain-core (LCEL)                   │
+                │  The base interfaces, abstract classes, & runnables    │
+                └───────────────────────────┬────────────────────────────┘
+                                            ▼
+                ┌────────────────────────────────────────────────────────┐
+                │         langchain-community / langchain-openai         │
+                │  Third-party vendor integrations (DBs, APIs, LLMs)     │
+                └────────────────────────────────────────────────────────┘
+            
+            `langchain-core`: This contains the core abstractions (the base API interfaces for LLMs, Prompts, Parsers, and Vector Stores) and the foundational pipeline engine.
+            
+            'langchain-community` & Partner Packages (`langchain-openai`, `langchain-anthropic`): Third-party integrations. Rather than bundling every database and LLM SDK together, components are split out.
+            
+            `langchain`: Higher-level cognitive architecture, hosting pre-packaged production chains and legacy retrieval wrappers.
+        
+        2. Core API Abstractions (The Building Blocks)
+
+            Every primary module in LangChain inherits from specific structural base classes found inside `langchain_core`.
+
+            A. Prompts: `ChatPromptTemplate`
+
+                Manages token variables and structures conversational roles (`system`, `human`, `ai`, `placeholder`).
+
+                    from langchain_core.prompts import ChatPromptTemplate
+
+                    prompt = ChatPromptTemplate.from_messages([
+                        ("system", "You are a specialized code reviewer."),
+                        ("human", "Review this code: {code}")
+                    ])
+
+            B. Models: `ChatOpenAI` / `ChatAnthropic`
+
+                Standardizes how you interact with models. Whether you are hitting a cloud API or running a local model via Ollama, they all conform to a unified `.invoke()` API interface.
+
+                    from langchain_openai import ChatOpenAI
+                    model = ChatOpenAI(model="gpt-4o")
+
+            C. Output Parsers: `StrOutputParser` / `PydanticOutputParser`
+
+                Translates raw text responses or tool-call payloads from the LLM back into structural programming types (strings, lists, or custom validated models).
+
+                    from langchain_core.output_parsers import StrOutputParser
+                    parser = StrOutputParser()
+
+        3. The Core Execution Engine: LCEL (LangChain Expression Language) & Runnables
+
+            The defining interface of the LangChain API is the Runnable. 
+            Prompts, Models, Parsers, Retrievers, and Tools all inherit from the `Runnable` base class.
+
+            Because they share this common interface, they can be composed into automated pipelines using the Python bitwise OR operator (`|`), known as LCEL (LangChain Expression Language).
+
+            Every `Runnable` component implements a standardized set of execution methods:
+
+            Method Interface    Execution Style     Use Case 
+            -----------------------------------------------------
+            .invoke(input)      Synchronous         Processes a single request and blocks until complete. 
+            .ainvoke(input)     Asynchronous        Async/Await variation for high-concurrency web apps (FastAPI). 
+            .stream(input)      Generator Stream    Streams tokens chunk-by-chunk in real-time to the frontend. 
+            .batch([inputs])    Parallel Batching   Automatically runs multiple inputs in parallel 
+                                                    using internal thread pools. 
+
+            LCEL Pipeline In Action
+                # Constructing a unified pipeline via shared Runnable interfaces
+                chain = prompt | model | parser
+
+                # Executing using the standard synchronous API
+                response = chain.invoke({"code": "def foo(): return 'bar'"})
+
+                # Executing using the streaming API for real-time text delivery
+                for chunk in chain.stream({"code": "def foo(): return 'bar'"}):
+                    print(chunk, end="", flush=True)
+        
+        4. Advanced API: Tool-Calling & Structured Outputs
+
+            Modern API usage avoids raw text generation, favoring structured schema data. The LangChain API provides two core methods on its model classes to facilitate this: 
+                    `.bind_tools()` and `.with_structured_output()`.
+
+            A. `.bind_tools()` (Agent Capabilities)
+
+                This takes Python functions or Pydantic models and attaches them to the LLM's invocation profile, allowing the model to choose to call functions.
+
+                from langchain_core.tools import tool
+
+                @tool
+                def calculate_factorial(n: int) -> int:
+                    """Calculates the factorial of a given integer."""
+                    import math
+                    return math.factorial(n)
+
+                # Attach the tool capabilities to the model API interface
+                model_with_tools = model.bind_tools([calculate_factorial])
+
+            B. `.with_structured_output()` (Guaranteed JSON schema output)
+
+                If we want the model to extract fields or validate data directly against a schema, pass a Pydantic class to this method. It forces the underlying model API to return structured objects instead of prose.
+
+                from pydantic import BaseModel
+
+                class TicketClassification(BaseModel):
+                    urgency: str
+                    department: str
+
+                # Reconfigure the model interface to return an instance of TicketClassification
+                structured_llm = model.with_structured_output(TicketClassification)
+                result = structured_llm.invoke("My database cluster is completely offline!")
+                print(result.department) # Outputs: "IT / Infrastructure"
+
+        5. Moving Past LCEL: LangGraph
+
+            While LangChain's core API (`|` pipes) handles straight, forward-moving pipelines cleanly, it falls apart when trying to build autonomous agents that require loops, state memory, or multi-step conditional branching.
+
+            To address this, the LangChain API ecosystem includes LangGraph. 
+            LangGraph replaces linear chains with a stateful, multi-actor graph database structure:
+
+                Nodes: Python functions or Runnables representing individual processing steps 
+                        (e.g., calling an LLM, running a SQL query).
+                Edges: Logic conditions deciding which node to move to next based on current graph state variables
+                        (e.g., if code fails verification, edge routes back to the LLM node).
+
+
+        openAI  <--------langchain-openAI---->  |
+                                                |
+        gemini  <--------langchain-gemini---->  | <------langchain-core---->    application.py
+                                                |
+        llama   <--------langchain-ollama---->  |
+
+        Cloud Commercial Models and Billing
+
+            To connect our Python code or LangChain application to a commercial cloud model, we need an API Key (often referred to as an access token).
+            
+                import os
+                from langchain_openai import ChatOpenAI
+
+                # 1. Set your secret API key/token in your environment
+                os.environ["OPENAI_API_KEY"] = "sk-proj-yourSecretDeveloperTokenHere..."
+
+                # 2. LangChain safely grabs it behind the scenes
+                model = ChatOpenAI(model="gpt-4o-mini")
+
+            When the LLM actually processes our prompt, it does not read whole words. Instead, it breaks text down into tiny fragments of characters called Tokens.
+
+            As a general rule of thumb: 1 token approx 4 characters, or roughly 0.75 words. And cloud providers charge us by the million tokens processed (e.g., 2.50 USD per million input tokens).
+        
+        Setting Up Local Models
+
+            If we are developing a prototype and do not want to register for developer API tokens or pay for computational text tokens, we can run open-weights models (like Llama 3 or Mistral) completely free on our local machine using Ollama by follwoing the below steps:
+            
+            1. Download Ollama: Go to the Ollama Windows Download page and grab the installer.
+
+            2. Install: Run the downloaded OllamaSetup.exe file. 
+                        It will install the application and place a tray icon in your Windows taskbar.
+
+            3. Open Terminal:   Open Command Prompt (cmd) or PowerShell.Run Llama 3: 
+                                Type the following command and press Enter 
+                                
+                                    ollama run llama3
+
+            To consume the model in python
+
+                from langchain_ollama import ChatOllama
+
+                # Connects directly to the local model running on your laptop's CPU/GPU
+                local_model = ChatOllama(model="llama3")
+                response = local_model.invoke("Hello from my local machine!")
+
+    LlamaIndex API / Structural Framework
+    ------------------------------------------------------------------------------------------------------
+
+        Much like the LangChain API architecture, the LlamaIndex API is built around a collection of unified interfaces and abstract base classes. 
+        
+        However, while LangChain’s API focuses heavily on *flow orchestration* (Runnables and chains), the LlamaIndex API is structurally engineered around data lifecycle and retrieval management.
+
+        If we look at the source architecture, the entire LlamaIndex API is segmented into decoupled, modular interfaces that manage how text is ingested, partitioned, stored, retrieved, and synthesized.
+        
+        1. The Core Architecture Units
+
+            Every pipeline in LlamaIndex revolves around two fundamental data abstractions located in the core data engine layer.
+
+            A. The `Document` Class
+
+                A `Document` is a generic container class that wraps any raw data source (a PDF, a database query row, or a web page crawl). It holds the raw string payload and a dictionary of unstructured metadata.
+            
+                    from llama_index.core import Document
+
+                    doc = Document(
+                        text="Our core system relies on a Spring Boot microservice cluster.",
+                        metadata={"category": "architecture", "author": "Vamsy"}
+                    )
+
+            B. The `BaseNode` Interface
+
+                A `Node` represents an atomic piece or "chunk" of a `Document`. LlamaIndex’s internal text splitters ingest a `Document` and output a sequence of `Node` objects. Nodes are highly intelligent data structures; they store their relationship vectors to neighboring chunks (e.g., `next_node`, `parent_node`) to maintain structural context during retrieval.
+
+            
+        2. The Ingestion & Parsing API (`IngestionPipeline`)
+
+            LlamaIndex provides a declarative execution pipeline class called `IngestionPipeline` to manage the extract, transform, and load (ETL) processing of data before it reaches your index.
+                
+                from llama_index.core.ingestion import IngestionPipeline
+                from llama_index.core.node_parser import TokenTextSplitter
+                from llama_index.core.extractors import TitleExtractor
+
+                pipeline = IngestionPipeline(
+                    transformations=[
+                        # 1. Text Splitter API: Divides text into explicit chunk lengths
+                        TokenTextSplitter(chunk_size=512, chunk_overlap=30),
+                        # 2. Extractor API: Automatically invokes an LLM to inject metadata tags into each node
+                        TitleExtractor(nodes=5),
+                    ]
+                )
+
+                # Executes the transformations and yields processed Node objects
+                nodes = pipeline.run(documents=[doc])
+        
+        3. The Indexing & Storage API (`BaseIndex`)
+
+            The `BaseIndex` is an abstract interface that determines how nodes are structured and queried in memory or on disk.
+                
+                                    ┌────────────────────────┐
+                                    │       BaseIndex        │
+                                    └───────────┬────────────┘
+                                                │
+                        ┌───────────────────────┼───────────────────────┐
+                        ▼                       ▼                       ▼
+                ┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+                │VectorStoreIndex │     │ SummaryIndex    │     │ PropertyGraph   │
+                │ (Dense Embeds)  │     │ (Linear Chunks) │     │(Knowledge Graph)│
+                └─────────────────┘     └─────────────────┘     └─────────────────┘
+
+            `VectorStoreIndex`: The most common API target. It passes nodes through an embedding model and registers them into a vector storage back-end.
+
+            `SummaryIndex`: A simple sequential index that stores nodes as a linear list, optimized for scanning an entire document collection to write summaries.
+            
+            `PropertyGraphIndex`: A highly advanced graph index that extracts strict entity-relation triples (e.g., `[Microservice] -> USED_FOR -> [BudgetTracker]`) to construct a searchable knowledge graph.
+
+                Storage Context Connection
+
+                    By default, indices live temporarily in-memory. To make them production-grade, you pass a `StorageContext` configured to talk directly to external enterprise engines like pgvector, Milvus, or Qdrant:
+        
+                        from llama_index.core import StorageContext, VectorStoreIndex
+
+                        # Injecting an external production database abstraction layer
+                        storage_context = StorageContext.from_defaults(vector_store=your_vector_db_instance)
+                        index = VectorStoreIndex(nodes, storage_context=storage_context)
+
+        4. The Retrieval & Query Interfaces
+
+            Once data is indexed, you transition from storage management to the runtime consumption API. This layer is cleanly separated into three individual operational interfaces.
+
+                A. The `BaseRetriever` Interface
+
+                    The retriever's only job is to perform a semantic lookup. It accepts a string query and returns a list of matching `NodeWithScore` objects. It does NOT invoke an LLM.
+                        
+                        # Fetches the top 5 most contextually relevant chunks
+                        retriever = index.as_retriever(similarity_top_k=5)
+                        nodes_returned = retriever.retrieve("What architecture is used?")
+                
+                B. The `BaseNodePostprocessor` Interface
+
+                    This layer intercepts the retrieved nodes *before* they hit the LLM prompt. This is where you inject processing logic like reranking filters, long-context compression algorithms, or metadata visibility logic.
+        
+                        from llama_index.core.postprocessor import SimilarityPostprocessor
+
+                        # Filter out any chunk that scores below a strict 75% mathematical confidence match
+                        processor = SimilarityPostprocessor(similarity_cutoff=0.75)
+
+                C. The `BaseSynthesizer` Interface
+
+                    The synthesizer is the orchestration brain. It collects the filtered nodes, structures them into an optimized internal prompt layout, sends them to the configured LLM engine, and parses the response into an intelligent container object called a `Response`.
+
+                    
+                        from llama_index.core import get_response_synthesizer
+
+                        response_synthesizer = get_response_synthesizer(response_mode="compact")
+        
+        5. Compiling into High-Level Engines
+
+            To save developers from manually wiring retrievers, postprocessors, and synthesizers together for basic use cases, the LlamaIndex API provides high-level factory patterns to instantiate plug-and-play runtime wrappers:
+        
+                1. Query Engine API (Stateless Q&A)
+                    query_engine = index.as_query_engine(
+                        retriever=retriever,
+                        node_postprocessors=[processor],
+                        response_synthesizer=response_synthesizer
+                    )
+                    response = query_engine.query("Explain the system layout.")
+
+                2. Chat Engine API (Stateful Conversational Memory Engine)
+
+                    chat_engine = index.as_chat_engine(chat_mode="condense_question")
+                    chat_response = chat_engine.chat("Can you summarize our product constraints?")
